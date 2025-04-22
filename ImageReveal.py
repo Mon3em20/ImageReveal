@@ -1,5 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt
+import cv2
 from scipy.ndimage import convolve
 
 # Phase 1: Load and Reveal the Image
@@ -69,3 +70,36 @@ if is_symmetric:
     print("The pattern shows symmetry, possibly a face.")
 else:
     print("No clear symmetry detected.")
+
+
+
+# Phase 3: Image Processing
+# Convert to uint8 for proper color conversion
+image_uint8 = (image_data * 255).astype(np.uint8)
+rgb_image = cv2.cvtColor(image_uint8, cv2.COLOR_GRAY2RGB)
+
+# Add features
+rgb_image[5,5]=[255,0,0]
+rgb_image[5,14]=[255,0,0]
+rgb_image[15,6]=[0,0,0]
+rgb_image[15,12]=[0,0,0]
+rgb_image[13,6]=[242,243,255]
+rgb_image[13,12]=[242,243,255]
+
+
+# Add border
+border_size = 10
+border_color = (0, 0, 255)  # Blue in BGR format
+bordered_image = cv2.copyMakeBorder(rgb_image, border_size, border_size, border_size, border_size,
+                                   cv2.BORDER_CONSTANT, value=border_color)
+
+# Display the image
+plt.figure(figsize=(8, 8))
+plt.imshow(bordered_image)
+plt.title("Processed Image")
+plt.axis('off')
+plt.show()
+
+# Save the image
+cv2.imwrite('processed_image.png', cv2.cvtColor(bordered_image, cv2.COLOR_RGB2BGR))
+print("Image saved as 'processed_image.png'")
